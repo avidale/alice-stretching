@@ -18,6 +18,7 @@ rules:
   examples:
     - основные правила
     - расскажи правила
+    - правила
 
 lifehacks:
   examples:
@@ -42,6 +43,7 @@ results:
 start_training:
   examples:
     - начать тренировку
+    - тренировка
 
 choose_day:
   regexp:

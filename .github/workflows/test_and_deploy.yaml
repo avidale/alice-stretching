@@ -48,5 +48,5 @@ jobs:
         runtime: 'python37-preview'
         memory: '128'
         entrypoint: 'main.handler'
-        environment: ''
+        environment: 'KEK=LOL'
         source: '.'

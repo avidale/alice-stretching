@@ -10,6 +10,9 @@ with open('texts/lifehacks.yaml', 'r', encoding='utf-8') as f:
     HACKS = yaml.safe_load(f)
 
 
+MENU_SUGGESTS = ['тренировка', 'правила', 'лайфхаки', 'разминка', 'противопоказания', 'результаты']
+
+
 def is_first_turn(turn: Turn) -> bool:
     if turn.ctx.session_is_new():
         return True
@@ -37,6 +40,7 @@ def hello(turn: Turn):
         turn.response_text += '\nСкажите "что ты умеешь", чтобы узнать больше, или "тренировка", чтобы начать растяжку.'
         turn.suggests.append('тренировка')
     turn.suggests.append('что ты умеешь')
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['help'])
@@ -44,6 +48,7 @@ def get_help(turn: Turn):
     # todo: rewrite the help to make it more informative
     turn.response_text = 'Чтобы начать заниматься, скажите "план тренировок".' \
         '\nЧтобы выбрать день занятий, скажите "день 1", "день 2", и так далее.'
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['what_can_you_do'])
@@ -51,11 +56,13 @@ def abilities(turn: Turn):
     turn.response_text = 'Вы можете выбрать любой день тренировки просто сказав или нажав на нужный Вам от 1 до 30.' \
         '\nТакже вы можете ознакомиться с рекомендациями по разминке, сказав "разминка".' \
         '\nВ разделе "лайфхаки" можно получить советы как выстроить свой план тренировок более эффективно.'
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.FALLBACK)
 def fallback(turn: Turn):
     turn.response_text = 'Я вас не понимаю. Скажите "тренировка", чтобы начать заниматься.'
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['rules'])
@@ -64,6 +71,7 @@ def rules(turn: Turn):
     \nРастяжки с первой по пятую - это ваши ОСНОВНЫЕ РАСТЯЖКИ, вы должны делать их каждый день. \
     Первые 5 дней вы делаете первые 5 растяжек как ежедневное комбо! \
     Затем, начиная с 6-го дня, вы просто добавите одно упражнение.'
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['lifehacks'])
@@ -73,6 +81,7 @@ def hacks(turn: Turn):
     turn.response_text = f'{hack}\nРассказать ещё лайфхак?'
     turn.stage = 'suggest_hack'
     turn.suggests.append('да')
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['warmup'])
@@ -83,6 +92,7 @@ def warmup(turn: Turn):
                          'Если вы растянете их слишком далеко, прежде чем они будут готовы, ' \
                          'они могут сломаться или получить травму. ' \
                          'Уделите разминке как минимум 10 минут, прежде чем начать выполнять упражнения.'
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['contra'])
@@ -99,6 +109,7 @@ def contra(turn: Turn):
                             \n- операция на крестообразной подколенной связке; \
                             \n- вес, отличный от нормы (значение выше 10 кг); \
                             \n- высокое давление.'
+    turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['result'])
@@ -109,3 +120,4 @@ def result(turn: Turn):
                          'сделай фото своего продольного шпагата, ' \
                          'и после прохождения наших занятий я тебе напомню о нём. ' \
                          'Мы сравним результаты, и даю тебе слово, ты удивишься своему прогрессу!'
+    turn.suggests.extend(MENU_SUGGESTS)
