@@ -1,5 +1,5 @@
 attrs
-tgalice>=0.2.11
+tgalice>=0.2.19
 dnspython
 pymongo
 pyyaml

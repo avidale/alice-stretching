@@ -1,10 +1,20 @@
 import logging
 import tgalice
+from tgalice.dialog import Context
 
 from dm import StretchDM
 
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+class CustomLogger(tgalice.storage.message_logging.MongoMessageLogger):
+    def should_ignore_message(self, context: Context = None, **kwargs) -> bool:
+        if super(self, CustomLogger).should_ignore_message(context=context, **kwargs):
+            return True
+        if context.yandex and context.yandex.request and context.yandex.request.type == 'Show.Pull':
+            return True
+        return False
 
 
 manager = StretchDM()
@@ -14,9 +24,7 @@ db = tgalice.message_logging.get_mongo_or_mock()
 connector = tgalice.dialog_connector.DialogConnector(
     dialog_manager=manager,
     storage=tgalice.storage.session_storage.BaseStorage(),
-    log_storage=tgalice.storage.message_logging.MongoMessageLogger(
-        collection=db.get_collection('logs'), detect_pings=True,
-    ),
+    log_storage=CustomLogger(collection=db.get_collection('logs'), detect_pings=True),
     alice_native_state='user',
 )
 
