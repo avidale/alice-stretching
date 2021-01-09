@@ -29,7 +29,7 @@ db = tgalice.message_logging.get_mongo_or_mock()
 connector = tgalice.dialog_connector.DialogConnector(
     dialog_manager=manager,
     storage=tgalice.storage.session_storage.BaseStorage(),
-    log_storage=CustomLogger(collection=db.get_collection('logs'), detect_pings=True),
+    log_storage=CustomLogger(collection=db.get_collection('message_logs'), detect_pings=True),
     alice_native_state='user',
 )
 
