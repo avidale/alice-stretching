@@ -26,6 +26,15 @@ with open('texts/hints.yaml', 'r', encoding='utf-8') as f:
     HINTS: List[str] = yaml.safe_load(f)
 
 
+COUNTERS = [
+    'dialogs-upload/468b181f-b155-4fb1-abe7-9605e61d40cb/96f0b001-c9df-4470-9e02-20ff499970be.opus',
+    'dialogs-upload/468b181f-b155-4fb1-abe7-9605e61d40cb/6f04bb5f-dacb-4079-aac0-f9463f6ae1c2.opus',
+    'dialogs-upload/468b181f-b155-4fb1-abe7-9605e61d40cb/a78a543d-fbbb-47fb-b8e6-10661d316fce.opus',
+    'dialogs-upload/468b181f-b155-4fb1-abe7-9605e61d40cb/476d2c14-004b-4d02-8393-df0e9b203c49.opus',
+    'dialogs-upload/468b181f-b155-4fb1-abe7-9605e61d40cb/decebca8-51d6-408c-8308-173681cf377f.opus',
+]
+
+
 @csc.add_handler(intents=['start_training', 'choose_day'], priority=Pr.STRONG_INTENT)
 @csc.add_handler(intents=['yes'], priority=Pr.WEAK_STAGE, stages=['suggest_start_training'])
 def exercise(turn: Turn):
@@ -46,11 +55,20 @@ def next_exercise(turn: Turn):
     do_exercise(turn=turn, day_id=turn.us.last_day)
 
 
+@csc.add_handler(intents=['yes'], priority=Pr.WEAK_STAGE, stages=['suggest_restart'])
+def next_exercise(turn: Turn):
+    turn.us.day_is_complete = False
+    turn.us.current_step = 0
+    turn.us.last_day = 1
+    do_exercise(turn=turn, day_id=1)
+
+
 def do_exercise(turn: Turn, day_id: int, step_id: int = None):
     step_id = step_id or turn.us.current_step or 0
 
     if day_id == 31:
         turn.response_text = 'Вы закончили всю программу! Хотите начать заново с первого дня?'
+        turn.stage = 'suggest_restart'
         turn.suggests.append('да')
         return
     if day_id not in EXERCISES:
@@ -74,6 +92,12 @@ def do_exercise(turn: Turn, day_id: int, step_id: int = None):
     if step_id == 0:
         turn.response_text = f'Начинаем день {day_id}. {turn.response_text}'
     # todo: add music
+
+    turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
+    if not ex.one_sided:
+        turn.response_text += '<voice>Теперь другая сторона.</voice>'
+        turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
+
     step_id += 1
     turn.us.current_step = step_id
     turn.us.last_day = day_id

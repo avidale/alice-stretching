@@ -24,9 +24,13 @@ def is_first_turn(turn: Turn) -> bool:
 def hello(turn: Turn):
     turn.response_text = 'Привет!' \
         '\nВ этом навыке уникальная техника и простые упражнения, '\
-        'выполняя которые, ты уже через 30 день сможешь сесть на шпагат!'
-    if turn.us.current_step:
-        turn.response_text += f'\nПродолжим с дня {turn.us.current_step + 1}?'
+        'выполняя которые, ты уже через 30 дней сможешь сесть на шпагат!'
+    if turn.us.last_day == 30 and turn.us.day_is_complete:
+        turn.response_text += f'\nВы уже выполнили всю программу. Начать с первого дня?'
+        turn.suggests.append('да')
+        turn.stage = 'suggest_restart'
+    elif turn.us.last_day:
+        turn.response_text += f'\nПродолжим с дня {turn.us.last_day + turn.us.day_is_complete}?'
         turn.suggests.append('да')
         turn.stage = 'suggest_start_training'
     else:
