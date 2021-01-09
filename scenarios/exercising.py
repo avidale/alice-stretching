@@ -91,16 +91,15 @@ def do_exercise(turn: Turn, day_id: int, step_id: int = None):
     turn.response_text = ex.text
     if step_id == 0:
         turn.response_text = f'Начинаем день {day_id}. {turn.response_text}'
-    # todo: add music
 
     turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
     if not ex.one_sided:
         turn.response_text += '<voice>Теперь другая сторона.</voice>'
         turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
+    turn.image_id = ex.image
 
     step_id += 1
     turn.us.current_step = step_id
     turn.us.last_day = day_id
     turn.stage = 'exercise'
     turn.suggests.append('дальше')
-    turn.image_id = ex.image
