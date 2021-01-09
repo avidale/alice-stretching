@@ -76,27 +76,30 @@ def do_exercise(turn: Turn, day_id: int, step_id: int = None):
         return
     last_ex: Exercise = EXERCISES[day_id]
 
-    if step_id >= 6 or step_id >= 5 and day_id < 5:
+    if step_id >= 7 or step_id >= 6 and day_id < 5:
         out = last_ex.out or random.choice(HINTS)
         turn.response_text = out
         turn.commands.append(tgalice.COMMANDS.EXIT)
         turn.us.day_is_complete = True
         return
 
-    if step_id == 5:
-        ex = last_ex
-    else:
-        ex = EXERCISES[step_id + 1]
-
-    turn.response_text = ex.text
     if step_id == 0:
-        turn.response_text = f'Начинаем день {day_id}. {turn.response_text}'
+        turn.response_text = f'Начинаем день {day_id}. ' \
+                             f'\nДля начала разомнитесь: побегайте, попрыгайте, поприседайте. ' \
+                             f'\nКогда будете готовы к растяжке, скажите "дальше".'
+        turn.suggests.append('дальше')
+    else:
+        if step_id == 6:
+            ex = last_ex
+        else:
+            ex = EXERCISES[step_id]
+        turn.response_text = ex.text
 
-    turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
-    if not ex.one_sided:
-        turn.response_text += '<voice>Теперь другая сторона.</voice>'
         turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
-    turn.image_id = ex.image
+        if not ex.one_sided:
+            turn.response_text += '<voice>Теперь другая сторона.</voice>'
+            turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
+        turn.image_id = ex.image
 
     step_id += 1
     turn.us.current_step = step_id
