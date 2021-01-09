@@ -4,3 +4,4 @@ dnspython
 pymongo
 pyyaml
 regex
+mongomock
