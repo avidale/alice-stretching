@@ -15,7 +15,7 @@ if os.getenv('SENTRY_DSN', None) is not None:
 
 class CustomLogger(tgalice.storage.message_logging.MongoMessageLogger):
     def should_ignore_message(self, context: Context = None, **kwargs) -> bool:
-        if super(self, CustomLogger).should_ignore_message(context=context, **kwargs):
+        if super(CustomLogger, self).should_ignore_message(context=context, **kwargs):
             return True
         if context.yandex and context.yandex.request and context.yandex.request.type == 'Show.Pull':
             return True

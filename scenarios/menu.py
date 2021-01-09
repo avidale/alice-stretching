@@ -112,12 +112,12 @@ def contra(turn: Turn):
     turn.suggests.extend(MENU_SUGGESTS)
 
 
-@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['result'])
-def result(turn: Turn):
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['results'])
+def about_results(turn: Turn):
     turn.response_text = 'Всегда нужно сравнивать результаты ДО и ПОСЛЕ, ' \
                          'иначе как ты  поймёшь, что твой прогресс становиться с каждым днём лучше. ' \
-                         'Сделай вот что: после того как мы провели первую тренировку, ' \
+                         '\nСделай вот что: после того как мы провели первую тренировку, ' \
                          'сделай фото своего продольного шпагата, ' \
                          'и после прохождения наших занятий я тебе напомню о нём. ' \
-                         'Мы сравним результаты, и даю тебе слово, ты удивишься своему прогрессу!'
+                         '\nМы сравним результаты, и даю тебе слово, ты удивишься своему прогрессу!'
     turn.suggests.extend(MENU_SUGGESTS)

@@ -13,6 +13,7 @@ from tgalice.interfaces.yandex import extract_yandex_forms
 from tgalice.nlu.basic_nlu import like_help, fast_normalize
 from tgalice.nlu.matchers import make_matcher_with_regex, TFIDFMatcher, TextNormalization
 from tgalice.nlu.regex_expander import load_intents_with_replacement
+from tgalice.utils.collections import make_unique
 
 from cascade import Turn, csc, UserState
 from utils import match_forms
@@ -56,6 +57,7 @@ class StretchDM(tgalice.dialog_manager.BaseDialogManager):
         resp.updated_user_object['user_state'] = turn.us.to_dict()
         logger.debug(f'FULL RESPONSE TIME: {time.time() - t0}')
         logger.debug(f'final state: {resp.updated_user_object}')
+        resp.suggests = make_unique(resp.suggests)
         return resp
 
     def nlu(self, ctx):
