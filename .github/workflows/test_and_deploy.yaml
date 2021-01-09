@@ -27,7 +27,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-  deploy:
+  deploy_caprover:
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -36,3 +36,17 @@ jobs:
       env:
         webhook_url: "${{ secrets.DEPLOY_WEBHOOK_URL }}"
         webhook_secret: "no secret"
+  deploy_function:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@master
+    - uses: goodsmileduck/yandex-serverless-action@v1
+      with:
+        token: ${{ secrets.TOKEN }}
+        function_id: ${{ secrets.FUNCTION_ID }}
+        runtime: 'python37-preview'
+        memory: '128'
+        entrypoint: 'main.handler'
+        # environment: 'MONGODB_URI=${{ secrets.MONGODB_URI }}'
+        source: '.'
