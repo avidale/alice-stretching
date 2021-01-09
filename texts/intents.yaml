@@ -1,0 +1,48 @@
+yes:
+  regexp: '((да|давай|конечно)\s?)+$'
+
+help:
+  regexp: 'помощь'
+
+what_can_you_do:
+  regexp: 'что ты (умеешь|можешь)'
+
+next:
+  examples:
+    - дальше
+    - вперед
+    - следующее упражнение
+    - следующее
+
+rules:
+  examples:
+    - основные правила
+    - расскажи правила
+
+lifehacks:
+  examples:
+    - лайфхаки
+
+program:
+  examples:
+    - программа тренировок
+
+warmup:
+  examples:
+    - разминка
+
+contra:
+  examples:
+    - противопоказания
+
+results:
+  examples:
+    - результаты
+
+start_training:
+  examples:
+    - начать тренировку
+
+choose_day:
+  regexp:
+    - 'день (?P<day>\d+)$'
