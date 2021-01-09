@@ -48,5 +48,5 @@ jobs:
         runtime: 'python37-preview'
         memory: '128'
         entrypoint: 'main.handler'
-        environment: 'KEK=LOL'
+        environment: 'SENTRY_DSN=${{ secrets.SENTRY_DSN }},MONGODB_URI=${{ secrets.MONGODB_URI }}'
         source: '.'

@@ -1,4 +1,6 @@
 import logging
+import os
+import sentry_sdk
 import tgalice
 from tgalice.dialog import Context
 
@@ -6,6 +8,9 @@ from dm import StretchDM
 
 
 logging.basicConfig(level=logging.DEBUG)
+
+if os.getenv('SENTRY_DSN', None) is not None:
+    sentry_sdk.init(os.environ['SENTRY_DSN'])
 
 
 class CustomLogger(tgalice.storage.message_logging.MongoMessageLogger):

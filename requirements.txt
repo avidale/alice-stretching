@@ -5,3 +5,4 @@ pymongo
 pyyaml
 regex
 mongomock
+sentry-sdk
