@@ -17,7 +17,7 @@ connector = tgalice.dialog_connector.DialogConnector(
     log_storage=tgalice.storage.message_logging.MongoMessageLogger(
         collection=db.get_collection('logs'), detect_pings=True,
     ),
-    alice_native_state=True,
+    alice_native_state='user',
 )
 
 handler = connector.serverless_alice_handler

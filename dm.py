@@ -39,14 +39,15 @@ class StretchDM(tgalice.dialog_manager.BaseDialogManager):
 
     def respond(self, ctx: Context):
         t0 = time.time()
+        uo = ctx.user_object or {}
         text, forms, intents = self.nlu(ctx)
         turn = Turn(
             ctx=ctx,
             text=text,
             intents=intents,
             forms=forms,
-            user_object=ctx.user_object,
-            us=UserState.from_dict(ctx.user_object.get('user_state', {})),
+            user_object=uo,
+            us=UserState.from_dict(uo.get('user_state', {})),
         )
         logger.debug(f'current stage is: {turn.stage}')
         handler_name = self.cascade(turn)

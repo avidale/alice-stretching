@@ -16,6 +16,7 @@ class Exercise(Serializeable):
     text: str = attr.ib()
     out: str = attr.ib(default=None)
     one_sided: bool = attr.ib(default=False)
+    image: str = attr.ib(default=None)
 
 
 with open('texts/exercises.yaml', 'r', encoding='utf-8') as f:
@@ -26,10 +27,17 @@ with open('texts/hints.yaml', 'r', encoding='utf-8') as f:
 
 
 @csc.add_handler(intents=['start_training', 'choose_day'], priority=Pr.STRONG_INTENT)
+@csc.add_handler(intents=['yes'], priority=Pr.WEAK_STAGE, stages=['suggest_start_training'])
 def exercise(turn: Turn):
-    day_id = 1
+    day_id = turn.us.last_day or 1
     if 'choose_day' in turn.forms:
         day_id = int(turn.forms['choose_day']['day'])
+        turn.us.day_is_complete = False
+        turn.us.current_step = 0
+    if turn.us.day_is_complete:
+        turn.us.day_is_complete = False
+        day_id += 1
+        turn.us.current_step = 0
     do_exercise(turn=turn, day_id=day_id)
 
 
@@ -71,3 +79,4 @@ def do_exercise(turn: Turn, day_id: int, step_id: int = None):
     turn.us.last_day = day_id
     turn.stage = 'exercise'
     turn.suggests.append('дальше')
+    turn.image_id = ex.image

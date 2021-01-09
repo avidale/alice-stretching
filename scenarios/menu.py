@@ -25,7 +25,14 @@ def hello(turn: Turn):
     turn.response_text = 'Привет!' \
         '\nВ этом навыке уникальная техника и простые упражнения, '\
         'выполняя которые, ты уже через 30 день сможешь сесть на шпагат!'
-    # todo: add a call to action
+    if turn.us.current_step:
+        turn.response_text += f'\nПродолжим с дня {turn.us.current_step + 1}?'
+        turn.suggests.append('да')
+        turn.stage = 'suggest_start_training'
+    else:
+        turn.response_text += '\nСкажите "что ты умеешь", чтобы узнать больше, или "тренировка", чтобы начать растяжку.'
+        turn.suggests.append('тренировка')
+    turn.suggests.append('что ты умеешь')
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['help'])
