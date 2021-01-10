@@ -14,6 +14,7 @@ from cascade import csc, Turn
 @attr.s
 class Exercise(Serializeable):
     text: str = attr.ib()
+    full_text: str = attr.ib(default=None)
     out: str = attr.ib(default=None)
     one_sided: bool = attr.ib(default=False)
     image: str = attr.ib(default=None)
@@ -93,7 +94,11 @@ def do_exercise(turn: Turn, day_id: int, step_id: int = None):
             ex = last_ex
         else:
             ex = EXERCISES[step_id]
-        turn.response_text = ex.text
+
+        if ex.full_text:
+            turn.response_text = f'<text>{ex.text}</text><voice>{ex.full_text}</voice>'
+        else:
+            turn.response_text = ex.text
 
         turn.response_text += f'<speaker audio="{random.choice(COUNTERS)}">'
         if not ex.one_sided:
