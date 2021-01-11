@@ -45,17 +45,23 @@ def hello(turn: Turn):
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['help'])
 def get_help(turn: Turn):
-    # todo: rewrite the help to make it more informative
-    turn.response_text = 'Чтобы начать заниматься, скажите "план тренировок".' \
-        '\nЧтобы выбрать день занятий, скажите "день 1", "день 2", и так далее.'
+    turn.response_text = 'Чтобы начать заниматься, скажите "начать тренировку".' \
+        '\nЧтобы выбрать день занятий, скажите "день 1", "день 2", и так далее.' \
+        '\nЧтобы перейти к следующему упражнению, скажите "дальше".' \
+        '\nЕщё можете попросить меня поделиться лайфхаком, рассказать про разминку, правила тренировки, '\
+        'противопоказания, и про то, как оценивать свои результаты.'
     turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['what_can_you_do'])
 def abilities(turn: Turn):
-    turn.response_text = 'Вы можете выбрать любой день тренировки просто сказав или нажав на нужный Вам от 1 до 30.' \
+    turn.response_text = 'Я помогаю вам научиться хорошей растяжке - чтобы начать заниматься, скажите "тренировка".' \
         '\nТакже вы можете ознакомиться с рекомендациями по разминке, сказав "разминка".' \
-        '\nВ разделе "лайфхаки" можно получить советы как выстроить свой план тренировок более эффективно.'
+        '\nВ разделе "лайфхаки" можно получить советы как выстроить свой план тренировок более эффективно.' \
+        '\nЕщё есть разделы "результаты", "правила" и "противопоказания".'
+    turn.response_text += '\nРассказать правила тренировки?'
+    turn.stage = 'suggest_rules'
+    turn.suggests.append('да')
     turn.suggests.extend(MENU_SUGGESTS)
 
 
@@ -66,25 +72,20 @@ def fallback(turn: Turn):
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['rules'])
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['yes'], stages=['suggest_rules'])
 def rules(turn: Turn):
     turn.response_text = 'Перед началом всегда разминаемся.\
     \nРастяжки с первой по пятую - это ваши ОСНОВНЫЕ РАСТЯЖКИ, вы должны делать их каждый день. \
     Первые 5 дней вы делаете первые 5 растяжек как ежедневное комбо! \
     Затем, начиная с 6-го дня, вы просто добавите одно упражнение.'
-    turn.suggests.extend(MENU_SUGGESTS)
-
-
-@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['lifehacks'])
-@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['yes'], stages=['suggest_hack'])
-def hacks(turn: Turn):
-    hack = random.choice(HACKS)
-    turn.response_text = f'{hack}\nРассказать ещё лайфхак?'
-    turn.stage = 'suggest_hack'
+    turn.response_text += '\nРассказать про разминку?'
+    turn.stage = 'suggest_warmup'
     turn.suggests.append('да')
     turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['warmup'])
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['yes'], stages=['suggest_warmup'])
 def warmup(turn: Turn):
     turn.response_text = 'Перед тем как начать, важно разогреть мышцы и суставы. ' \
                          'Побегайте,попрыгайте на месте, приседайте.' \
@@ -92,10 +93,14 @@ def warmup(turn: Turn):
                          'Если вы растянете их слишком далеко, прежде чем они будут готовы, ' \
                          'они могут сломаться или получить травму. ' \
                          'Уделите разминке как минимум 10 минут, прежде чем начать выполнять упражнения.'
+    turn.response_text += '\nРассказать про противопоказания?'
+    turn.stage = 'suggest_contra'
+    turn.suggests.append('да')
     turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['contra'])
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['yes'], stages=['suggest_contra'])
 def contra(turn: Turn):
     turn.response_text = 'Далеко не всем показано практиковать растяжку, различные асаны и садиться на шпагат. ' \
                          'Если в этом списке Вы нашли свой “диагноз”, ' \
@@ -109,10 +114,14 @@ def contra(turn: Turn):
                             \n- операция на крестообразной подколенной связке; \
                             \n- вес, отличный от нормы (значение выше 10 кг); \
                             \n- высокое давление.'
+    turn.response_text += '\nРассказать, как оценивать результаты тренировок?'
+    turn.stage = 'suggest_results'
+    turn.suggests.append('да')
     turn.suggests.extend(MENU_SUGGESTS)
 
 
 @csc.add_handler(priority=Pr.STRONG_INTENT, intents=['results'])
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['yes'], stages=['suggest_results'])
 def about_results(turn: Turn):
     turn.response_text = 'Всегда нужно сравнивать результаты ДО и ПОСЛЕ, ' \
                          'иначе как ты  поймёшь, что твой прогресс становиться с каждым днём лучше. ' \
@@ -120,4 +129,17 @@ def about_results(turn: Turn):
                          'сделай фото своего продольного шпагата, ' \
                          'и после прохождения наших занятий я тебе напомню о нём. ' \
                          '\nМы сравним результаты, и даю тебе слово, ты удивишься своему прогрессу!'
+    turn.response_text += '\nПоделиться с вами лайфхаком про растяжку?'
+    turn.stage = 'suggest_hack'
+    turn.suggests.append('да')
+    turn.suggests.extend(MENU_SUGGESTS)
+
+
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['lifehacks'])
+@csc.add_handler(priority=Pr.STRONG_INTENT, intents=['yes'], stages=['suggest_hack'])
+def hacks(turn: Turn):
+    hack = random.choice(HACKS)
+    turn.response_text = f'{hack}\nРассказать ещё один лайфхак?'
+    turn.stage = 'suggest_hack'
+    turn.suggests.append('да')
     turn.suggests.extend(MENU_SUGGESTS)
