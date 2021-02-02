@@ -26,7 +26,7 @@ def morning_show(turn: Turn):
     turn.show_item_meta = dict(
         content_id=str(uuid4()),
         title='Упражнение на растяжку',
-        title_tts='Упражнение на растяжку',
+        # title_tts='Упражнение на растяжку',
         publication_date=str(now) + 'Z',
-        expiration_date=str(now + timedelta(days=7)) + 'Z',
+        # expiration_date=str(now + timedelta(days=7)) + 'Z',
     )
