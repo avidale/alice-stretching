@@ -18,6 +18,7 @@ class UserState(Serializeable):
 class Turn(DialogTurn):
     us: UserState = attr.ib(default=None)
     image_id: str = attr.ib(default=None)
+    show_item_meta = attr.ib(default=None)
 
     def make_response(self) -> Optional[Response]:
         resp = super(Turn, self).make_response()
@@ -25,6 +26,7 @@ class Turn(DialogTurn):
             return
         if self.image_id:
             resp.image_id = self.image_id
+        resp.show_item_meta = self.show_item_meta
         return resp
 
 
