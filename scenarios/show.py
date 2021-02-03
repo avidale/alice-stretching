@@ -27,6 +27,6 @@ def morning_show(turn: Turn):
         content_id=str(uuid4()),
         title='Упражнение на растяжку',
         # title_tts='Упражнение на растяжку',
-        publication_date=str(now) + 'Z',
+        publication_date=str(now).replace(' ', 'T') + 'Z',
         # expiration_date=str(now + timedelta(days=7)) + 'Z',
     )
