@@ -2,7 +2,7 @@ import random
 
 from tgalice.cascade import Pr
 from cascade import csc, Turn
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 from scenarios.exercising import EXERCISES, Exercise
