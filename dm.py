@@ -34,7 +34,8 @@ class StretchDM(tgalice.dialog_manager.BaseDialogManager):
         )
         self.intents_matcher = make_matcher_with_regex(
             intents=self.intents,
-            base_matcher=TFIDFMatcher(threshold=0.3, text_normalization=TextNormalization.FAST_LEMMATIZE)
+            base_matcher=TFIDFMatcher(threshold=0.3, text_normalization=TextNormalization.FAST_LEMMATIZE),
+            merge=False,
         )
 
     def respond(self, ctx: Context):
